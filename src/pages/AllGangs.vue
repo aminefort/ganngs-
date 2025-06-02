@@ -6,7 +6,6 @@ import locale from "../locale";
 import { useGlobalState } from "../stores/globalStore";
 
 const globalState = useGlobalState();
-
 const gangs = ref();
 
 onMounted(async () => {
@@ -17,28 +16,28 @@ onMounted(async () => {
 
   sortOptions = [
     {
-        label: locale("AllGangs", "power"),
-        value: 'power',
+      label: locale("AllGangs", "power"),
+      value: 'power',
     },
     {
-        label: locale("AllGangs", "members"),
-        value: 'members',
+      label: locale("AllGangs", "members"),
+      value: 'members',
     },
     {
-        label: locale("AllGangs", "zones"),
-        value: 'zones',
+      label: locale("AllGangs", "zones"),
+      value: 'zones',
     },
   ];
-})
+});
 
 let sortOptions = [];
 
 const onSortChange = (event) => {
-    const value = event.value.value;
-    const sortValue = event.value;
+  const value = event.value.value;
+  const sortValue = event.value;
 
-    currentSort.value = value;
-    currentSortKey.value = sortValue;
+  currentSort.value = value;
+  currentSortKey.value = sortValue;
 };
 
 const currentSort = ref('power');
@@ -46,40 +45,40 @@ const currentSortKey = ref(sortOptions[0]);
 </script>
 
 <template>
-  <div class="Main">
-    <div class="Header">
-      <div class="HeaderContent">
-        <h1>Gangs Overview</h1>
-        <p class="SubTitle">all active gangs in the territory</p>
+  <div class="gangs-container">
+    <div class="gangs-header">
+      <div class="header-content">
+        <h2>{{ locale("AllGangs", "title") }}</h2>
+        <p class="subtitle">{{ locale("AllGangs", "subtitle") }}</p>
       </div>
       <Dropdown 
         v-model="currentSortKey" 
         :options="sortOptions" 
         optionLabel="label" 
         placeholder="Sort by" 
-        class="SortDropdown"
+        class="sort-dropdown"
         @change="onSortChange($event)"
       />
     </div>
 
     <DataView :value="gangs" :sortField="currentSort" :sortOrder="-1">
       <template #list="slotProps">
-        <div class="DataGrid">
-          <div v-for="(item, index) in slotProps.items" :key="index" class="GangCard">
-            <div class="GangHeader">
-              <div class="GangLogoWrapper">
+        <div class="gangs-grid">
+          <div v-for="(item, index) in slotProps.items" :key="index" class="gang-card">
+            <div class="gang-card-header">
+              <div class="logo-wrapper">
                 <Avatar
                   :image="item.logo"
                   size="large"
-                  class="GangLogo"
+                  class="gang-logo"
                 />
-                <div class="GangStatus" :style="{ background: `#${item.color}` }"></div>
+                <div class="status-indicator" :style="{ background: `#${item.color}` }"></div>
               </div>
-              <div class="GangInfo">
-                <h2>{{ item.name }}</h2>
+              <div class="gang-info">
+                <h3>{{ item.name }}</h3>
                 <Tag 
                   :value="item.shortName" 
-                  class="GangTag"
+                  class="gang-tag"
                   :style="{
                     background: `#${item.color}20`,
                     color: `#${item.color}`,
@@ -89,34 +88,34 @@ const currentSortKey = ref(sortOptions[0]);
               </div>
             </div>
 
-            <div class="GangStats">
-              <div class="StatItem">
-                <div class="StatIcon PowerIcon">
+            <div class="gang-stats">
+              <div class="stat-item">
+                <div class="stat-icon power-icon">
                   <i class="pi pi-bolt"></i>
                 </div>
-                <div class="StatInfo">
-                  <span class="StatLabel">Power Level</span>
-                  <span class="StatValue">{{ item.power }}</span>
+                <div class="stat-info">
+                  <span class="stat-label">{{ locale("AllGangs", "power") }}</span>
+                  <span class="stat-value">{{ item.power }}</span>
                 </div>
               </div>
 
-              <div class="StatItem">
-                <div class="StatIcon TerritoriesIcon">
+              <div class="stat-item">
+                <div class="stat-icon territories-icon">
                   <i class="pi pi-map"></i>
                 </div>
-                <div class="StatInfo">
-                  <span class="StatLabel">Territories</span>
-                  <span class="StatValue">{{ item.territories.length }}</span>
+                <div class="stat-info">
+                  <span class="stat-label">{{ locale("AllGangs", "territories") }}</span>
+                  <span class="stat-value">{{ item.territories.length }}</span>
                 </div>
               </div>
 
-              <div class="StatItem" v-if="globalState.canSeeMemberCount.value">
-                <div class="StatIcon MembersIcon">
+              <div class="stat-item" v-if="globalState.canSeeMemberCount.value">
+                <div class="stat-icon members-icon">
                   <i class="pi pi-users"></i>
                 </div>
-                <div class="StatInfo">
-                  <span class="StatLabel">Members</span>
-                  <span class="StatValue">{{ item.members.length }}</span>
+                <div class="stat-info">
+                  <span class="stat-label">{{ locale("AllGangs", "members") }}</span>
+                  <span class="stat-value">{{ item.members.length }}</span>
                 </div>
               </div>
             </div>
@@ -128,254 +127,178 @@ const currentSortKey = ref(sortOptions[0]);
 </template>
 
 <style scoped lang="scss">
-.Main {
-  width: 100%;
-  min-height: 100vh;
-  // background: linear-gradient(145deg, rgba(0, 119, 167, 0.15), rgba(0, 255, 157, 0.05));
+.gangs-container {
+  height: 100%;
   color: white;
   padding: 2rem;
-  overflow-x: hidden;
-  // backdrop-filter: blur(2px);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05), transparent);
 
-  .Header {
+  .gangs-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     padding: 1.5rem;
-    background: radial-gradient(75.44% 82.2% at 50% 50%, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.00) 100%);
-    border-radius: 16px;
-    // backdrop-filter: blur(4px);
-    // box-shadow: 0 0 20px rgba(0, 183, 255, 0.1);
-    border: 1px solid rgba(0, 183, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
 
-    .HeaderContent {
-      h1 {
-        font-size: 2.25rem;
+    .header-content {
+      h2 {
         margin: 0;
-        color: #00b7ff;
-        text-shadow: 0 0 10px rgba(0, 195, 255, 0.3);
-        font-weight: 700;
+        font-size: 1.8rem;
+        color: #00ff9d;
+        font-weight: 600;
         letter-spacing: -0.5px;
       }
 
-      .SubTitle {
+      .subtitle {
         margin: 0.5rem 0 0 0;
         color: rgba(255, 255, 255, 0.7);
         font-size: 1rem;
-        letter-spacing: 0.5px;
       }
     }
 
-    .SortDropdown {
-      width: 180px;
-      background: rgba(0, 183, 255, 0.1);
-      border: 1px solid rgba(0, 183, 255, 0.2);
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 183, 255, 0.1);
-      color: white;
-      padding: 0.75rem 1rem;
-      outline: none;
-      cursor: pointer;
-      // backdrop-filter: blur(4px);
+    .sort-dropdown {
+      min-width: 180px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
       transition: all 0.3s ease;
 
       &:hover {
-        border-color: rgba(0, 183, 255, 0.4);
+        border-color: rgba(255, 255, 255, 0.2);
       }
 
       &:focus {
-        border-color: #00b7ff;
-        box-shadow: 0 0 20px rgba(0, 183, 255, 0.3);
-      }
-
-      option {
-        background: #0a1a2a;
-        color: white;
-        padding: 10px;
+        border-color: #00ff9d;
+        box-shadow: 0 0 0 2px rgba(0, 255, 157, 0.2);
       }
     }
   }
 
-  .DataGrid {
+  .gangs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 1.5rem;
     padding: 0.5rem;
-    width: 100%;
 
-    @media (min-width: 640px) {
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 2rem;
-    }
-
-    @media (min-width: 1024px) {
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 2.5rem;
-    }
-
-    .GangCard {
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    background: radial-gradient(75.44% 82.2% at 50% 50%, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.00) 100%);
-
-      border-radius: 16px;
-      // border: 1px solid rgba(0, 183, 255, 0.15);
+    .gang-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
       padding: 1.5rem;
       transition: all 0.3s ease;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      // backdrop-filter: blur(4px);
-      position: relative;
-      overflow: hidden;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        // background: rgba(255, 255, 255, 0.03);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
 
       &:hover {
-        border-color: rgba(51, 51, 51, 0.3);
-
-        &::before {
-          opacity: 1;
-        }
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
       }
 
-      .GangHeader {
+      .gang-card-header {
         display: flex;
         gap: 1.5rem;
-        align-items: center;
+        margin-bottom: 1.5rem;
 
-        .GangLogoWrapper {
+        .logo-wrapper {
           position: relative;
-          flex-shrink: 0;
           
-          .GangLogo {
-            width: 72px;
-            height: 72px;
-            border-radius: 14px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            object-fit: cover;
-            border: 2px solid rgba(0, 132, 255, 0.2);
+          .gang-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
           }
 
-          .GangStatus {
+          .status-indicator {
             position: absolute;
             bottom: -4px;
             right: -4px;
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            border: 2px solid rgba(8, 20, 30, 0.9);
-            box-shadow: 0 0 10px rgba(0, 183, 255, 0.3);
+            border: 2px solid rgba(13, 17, 23, 0.95);
           }
         }
 
-        .GangInfo {
+        .gang-info {
           flex: 1;
-          min-width: 0;
           
-          h2 {
+          h3 {
             margin: 0 0 0.75rem 0;
-            font-size: 1.5rem;
-            color: #00b7ff;
+            font-size: 1.4rem;
+            color: #fff;
             font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-shadow: 0 0 10px rgba(0, 195, 255, 0.3);
           }
 
-          .GangTag {
-            font-size: 0.875rem;
-            padding: 0.25rem 1rem;
-            border-radius: 8px;
+          .gang-tag {
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
             font-weight: 500;
-            display: inline-block;
-            letter-spacing: 0.5px;
-            // backdrop-filter: blur(4px);
           }
         }
       }
 
-      .GangStats {
+      .gang-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 1rem;
 
-        .StatItem {
-          background: rgba(0, 183, 255, 0.05);
-          border-radius: 12px;
+        .stat-item {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
           padding: 1rem;
-          transition: all 0.3s ease;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
           text-align: center;
-          gap: 0.75rem;
-          border: 1px solid rgba(0, 183, 255, 0.1);
+          transition: all 0.3s ease;
 
           &:hover {
-            background: rgba(0, 183, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             transform: translateY(-2px);
-            border-color: rgba(0, 183, 255, 0.2);
           }
 
-          .StatIcon {
+          .stat-icon {
             width: 40px;
             height: 40px;
-            border-radius: 10px;
+            margin: 0 auto 0.75rem;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            font-size: 1.2rem;
 
-            svg {
-              transition: all 0.3s ease;
+            &.power-icon {
+              background: rgba(0, 255, 157, 0.1);
+              color: #00ff9d;
             }
 
-            &.PowerIcon {
+            &.territories-icon {
               background: rgba(0, 183, 255, 0.1);
               color: #00b7ff;
             }
 
-            &.TerritoriesIcon {
-              background: rgba(0, 255, 157, 0.1);
-              color: #00ffa1;
-            }
-
-            &.MembersIcon {
-              background: rgba(0, 119, 167, 0.1);
-              color: #0077a7;
+            &.members-icon {
+              background: rgba(255, 64, 129, 0.1);
+              color: #ff4081;
             }
           }
 
-          .StatInfo {
-            display: flex;
-            flex-direction: column;
-            gap: 0.375rem;
-
-            .StatLabel {
-              font-size: 0.75rem;
-              color: rgba(255, 255, 255, 0.6);
+          .stat-info {
+            .stat-label {
+              display: block;
+              font-size: 0.8rem;
+              color: rgba(255, 255, 255, 0.5);
+              margin-bottom: 0.25rem;
               text-transform: uppercase;
-              letter-spacing: 1px;
+              letter-spacing: 0.5px;
             }
 
-            .StatValue {
-              font-size: 1.25rem;
+            .stat-value {
+              font-size: 1.2rem;
               font-weight: 600;
-              color: #00b7ff;
-              text-shadow: 0 0 10px rgba(0, 195, 255, 0.3);
+              color: #fff;
             }
           }
         }
@@ -384,4 +307,53 @@ const currentSortKey = ref(sortOptions[0]);
   }
 }
 
+:deep(.p-dropdown) {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  .p-dropdown-label {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .p-dropdown-trigger {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:focus {
+    border-color: #00ff9d;
+    box-shadow: 0 0 0 2px rgba(0, 255, 157, 0.2);
+  }
+}
+
+:deep(.p-dropdown-panel) {
+  background: rgba(13, 17, 23, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+
+  .p-dropdown-items {
+    padding: 0.5rem;
+
+    .p-dropdown-item {
+      color: rgba(255, 255, 255, 0.7);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin: 0.25rem 0;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      &.p-highlight {
+        background: rgba(0, 255, 157, 0.2);
+        color: #00ff9d;
+      }
+    }
+  }
+}
 </style>
