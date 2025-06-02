@@ -65,17 +65,17 @@ const menuItems = ref([
             <div class="menu-item-indicator"></div>
           </div>
         </div>
-
-
       </div>
 
       <div class="content-area" :class="{ 'no-padding': globalState.currentTab.value === 'territories' }">
-        <Suspense>
-          <YourGang v-if="globalState.currentTab.value === 'yourGang'" />
-        </Suspense>
-        <AllGangs v-if="globalState.currentTab.value === 'allGangs'" />
-        <Territories v-if="globalState.currentTab.value === 'territories'" />
-        <DarkWeb v-if="globalState.currentTab.value === 'darkWeb'" />
+        <div class="content-scroll">
+          <Suspense>
+            <YourGang v-if="globalState.currentTab.value === 'yourGang'" />
+          </Suspense>
+          <AllGangs v-if="globalState.currentTab.value === 'allGangs'" />
+          <Territories v-if="globalState.currentTab.value === 'territories'" />
+          <DarkWeb v-if="globalState.currentTab.value === 'darkWeb'" />
+        </div>
       </div>
     </div>
   </div>
@@ -101,6 +101,7 @@ const menuItems = ref([
   display: flex;
   flex: 1;
   background: #0d0d0d;
+  overflow: hidden;
   
   .sidebar {
     width: 300px;
@@ -202,80 +203,38 @@ const menuItems = ref([
         }
       }
     }
-
-    .sidebar-footer {
-      padding: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-      .level-info {
-        margin-bottom: 1rem;
-
-        .level-header {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.5rem;
-          color: #888;
-          font-size: 0.9rem;
-        }
-
-        .level-progress {
-          .progress-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin-bottom: 0.5rem;
-
-            .progress {
-              height: 100%;
-              background: #00ff9d;
-              border-radius: 2px;
-              transition: width 0.3s ease;
-            }
-          }
-
-          span {
-            font-size: 0.8rem;
-            color: #666;
-          }
-        }
-      }
-
-      .daily-limit {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.75rem;
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 6px;
-        color: #888;
-        font-size: 0.9rem;
-      }
-    }
   }
 
   .content-area {
     flex: 1;
-    overflow-y: auto;
-    padding: 2rem;
     background-color: #0f0f0f;
+    position: relative;
+    overflow: hidden;
 
-    &.no-padding {
+    &.no-padding .content-scroll {
       padding: 0;
     }
 
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
+    .content-scroll {
+      height: 100%;
+      overflow-y: auto;
+      padding: 2rem;
 
-    &::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.03);
-    }
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
 
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
+      &::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.03);
+      }
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
+      &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
       }
     }
   }
